@@ -11,7 +11,7 @@
       <h2>Notive</h2>
       <nav>
         <ul>
-          <li><a href="/dashboard">📊 Dashboard</a></li>
+          <li><a href="/">📊 Dashboard</a></li>
           <li><a href="/notes" class="active">📝 Notes</a></li>
           <li><a href="/planner">📅 Planner</a></li>
           <li><a href="/habits">✅ Habits</a></li>
@@ -28,6 +28,12 @@
       <div class="canvas-controls">
         <button id="clearCanvas">Clear</button>
         <button id="saveCanvas">Save</button>
+        <button id="convertText">Convert to Text</button>
+      </div>
+      
+      <div id="ocrResult">
+        <h3>Detected Text:</h3>
+        <textarea id="textOutput" rows="6" cols="80" readonly></textarea>
       </div>
     </main>
   </div>
