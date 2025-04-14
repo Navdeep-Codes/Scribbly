@@ -1,1 +1,37 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Notive – Notes</title>
+  <link rel="stylesheet" href="/css/notes.css" />
+</head>
+<body>
+  <div class="container">
+    <aside class="sidebar">
+      <h2>Notive</h2>
+      <nav>
+        <ul>
+          <li><a href="/dashboard">📊 Dashboard</a></li>
+          <li><a href="/notes" class="active">📝 Notes</a></li>
+          <li><a href="/planner">📅 Planner</a></li>
+          <li><a href="/habits">✅ Habits</a></li>
+          <li><a href="/math">➗ Math</a></li>
+        </ul>
+      </nav>
+    </aside>
 
+    <main class="content">
+      <h2>Handwritten Notes</h2>
+      <div class="canvas-wrapper">
+        <canvas id="noteCanvas" width="800" height="400"></canvas>
+      </div>
+      <div class="canvas-controls">
+        <button id="clearCanvas">Clear</button>
+        <button id="saveCanvas">Save</button>
+      </div>
+    </main>
+  </div>
+
+  <script src="/js/notes.js"></script>
+</body>
+</html>
