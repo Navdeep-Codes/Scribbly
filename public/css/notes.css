@@ -80,3 +80,15 @@ canvas {
 .canvas-controls button:hover {
   background-color: #2563eb;
 }
+#ocrResult {
+  margin-top: 20px;
+}
+
+#ocrResult textarea {
+  width: 100%;
+  padding: 10px;
+  font-size: 14px;
+  resize: vertical;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
