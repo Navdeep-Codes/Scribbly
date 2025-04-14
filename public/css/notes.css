@@ -1,8 +1,7 @@
-
 body {
   margin: 0;
   font-family: Arial, sans-serif;
-  background-color: #f5f5f5;
+  background-color: #f7f7f7;
 }
 
 .container {
@@ -19,7 +18,6 @@ body {
 
 .sidebar h2 {
   margin-top: 0;
-  font-size: 24px;
 }
 
 .sidebar ul {
@@ -28,17 +26,15 @@ body {
 }
 
 .sidebar li {
-  margin-bottom: 15px;
+  margin: 10px 0;
 }
 
 .sidebar a {
   color: white;
   text-decoration: none;
-  font-size: 16px;
 }
 
-.sidebar a.active,
-.sidebar a:hover {
+.sidebar a.active {
   font-weight: bold;
   text-decoration: underline;
 }
@@ -46,49 +42,44 @@ body {
 .content {
   flex-grow: 1;
   padding: 30px;
-  overflow-y: auto;
-  background: white;
-}
-
-.canvas-wrapper {
-  border: 2px solid #ccc;
-  display: inline-block;
   background-color: white;
+  overflow-y: auto;
+}
+
+input#noteTitle,
+textarea#noteContent {
+  width: 100%;
   margin-top: 10px;
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
 }
 
-canvas {
-  cursor: crosshair;
-  display: block;
+.buttons {
+  margin: 10px 0;
 }
 
-.canvas-controls {
-  margin-top: 10px;
-}
-
-.canvas-controls button {
+button {
   padding: 8px 16px;
-  margin-right: 10px;
   background-color: #3b82f6;
   color: white;
   border: none;
   border-radius: 6px;
   cursor: pointer;
-  font-size: 14px;
 }
 
-.canvas-controls button:hover {
+button:hover {
   background-color: #2563eb;
 }
-#ocrResult {
-  margin-top: 20px;
+
+#notesList {
+  list-style: none;
+  padding-left: 0;
 }
 
-#ocrResult textarea {
-  width: 100%;
-  padding: 10px;
-  font-size: 14px;
-  resize: vertical;
-  border: 1px solid #ccc;
-  border-radius: 5px;
+#notesList li {
+  padding: 6px;
+  border-bottom: 1px solid #ddd;
+  cursor: pointer;
 }
