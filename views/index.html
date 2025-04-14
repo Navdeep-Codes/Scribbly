@@ -1,9 +1,10 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Notive Dashboard</title>
-  <link rel="stylesheet" href="/css/styles.css" />
+  <title>Notive – Notes</title>
+  <link rel="stylesheet" href="/css/notes.css" />
 </head>
 <body>
   <div class="container">
@@ -11,24 +12,30 @@
       <h2>Notive</h2>
       <nav>
         <ul>
-          <li><a href="#" data-page="dashboard">📊 Dashboard</a></li>
-          <li><a href="#" data-page="notes">📝 Notes</a></li>
-          <li><a href="#" data-page="planner">📅 Planner</a></li>
-          <li><a href="#" data-page="habits">✅ Habits</a></li>
-          <li><a href="#" data-page="math">➗ Math</a></li>
+          <li><a href="/dashboard">📊 Dashboard</a></li>
+          <li><a href="/notes" class="active">📝 Notes</a></li>
+          <li><a href="/planner">📅 Planner</a></li>
+          <li><a href="/habits">✅ Habits</a></li>
+          <li><a href="/math">➗ Math</a></li>
         </ul>
       </nav>
     </aside>
 
     <main class="content">
-      <div id="dashboard" class="page">Welcome to your Dashboard!</div>
-      <div id="notes" class="page hidden">Notes section goes here</div>
-      <div id="planner" class="page hidden">Planner section goes here</div>
-      <div id="habits" class="page hidden">Habits section goes here</div>
-      <div id="math" class="page hidden">Math OCR section goes here</div>
+      <h2>Notes</h2>
+
+      <input type="text" id="noteTitle" placeholder="Note Title" />
+      <textarea id="noteContent" placeholder="Write your note here..." rows="12"></textarea>
+
+      <div class="buttons">
+        <button id="saveNote">Save Note</button>
+      </div>
+
+      <h3>Saved Notes</h3>
+      <ul id="notesList"></ul>
     </main>
   </div>
-  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4.0.2/dist/tesseract.min.js"></script>
-  <script src="/js/main.js"></script>
+
+  <script src="/js/notes.js"></script>
 </body>
 </html>
