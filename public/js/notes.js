@@ -39,4 +39,21 @@ document.getElementById("saveCanvas").addEventListener("click", () => {
   link.download = "notive-note.png";
   link.click();
 });
+document.getElementById("convertText").addEventListener("click", () => {
+  const output = document.getElementById("textOutput");
+  output.value = "Processing...";
+
+  Tesseract.recognize(
+    canvas.toDataURL("image/png"),
+    'eng',
+    {
+      logger: m => console.log(m) // Optional: shows progress
+    }
+  ).then(({ data: { text } }) => {
+    output.value = text.trim() || "(No readable text found)";
+  }).catch(err => {
+    output.value = "Error recognizing text.";
+    console.error(err);
+  });
+});
 
