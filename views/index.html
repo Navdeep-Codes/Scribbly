@@ -1,24 +1,33 @@
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Notive</title>
-  <link rel="stylesheet" href="/css/styles.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Notive Dashboard</title>
+  <link rel="stylesheet" href="/css/styles.css" />
 </head>
 <body>
-  <header>
-    <h1>Welcome to Notive ✍️</h1>
-    <nav>
-      <a href="#">Dashboard</a>
-      <a href="#">Notes</a>
-      <a href="#">Planner</a>
-      <a href="#">Habits</a>
-      <a href="#">Math</a>
-    </nav>
-  </header>
+  <div class="container">
+    <aside class="sidebar">
+      <h2>Notive</h2>
+      <nav>
+        <ul>
+          <li><a href="#" data-page="dashboard">📊 Dashboard</a></li>
+          <li><a href="#" data-page="notes">📝 Notes</a></li>
+          <li><a href="#" data-page="planner">📅 Planner</a></li>
+          <li><a href="#" data-page="habits">✅ Habits</a></li>
+          <li><a href="#" data-page="math">➗ Math</a></li>
+        </ul>
+      </nav>
+    </aside>
 
-  <main>
-    <p>This is your digital note-taking, planning, and handwriting-to-text hub!</p>
-  </main>
+    <main class="content">
+      <div id="dashboard" class="page">Welcome to your Dashboard!</div>
+      <div id="notes" class="page hidden">Notes section goes here</div>
+      <div id="planner" class="page hidden">Planner section goes here</div>
+      <div id="habits" class="page hidden">Habits section goes here</div>
+      <div id="math" class="page hidden">Math OCR section goes here</div>
+    </main>
+  </div>
 
   <script src="/js/main.js"></script>
 </body>
