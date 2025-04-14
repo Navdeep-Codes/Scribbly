@@ -1,59 +1,42 @@
-const canvas = document.getElementById("noteCanvas");
-const ctx = canvas.getContext("2d");
+const titleInput = document.getElementById("noteTitle");
+const contentInput = document.getElementById("noteContent");
+const saveBtn = document.getElementById("saveNote");
+const notesList = document.getElementById("notesList");
 
-let drawing = false;
+// Load from localStorage on page load
+window.onload = function () {
+  loadNotes();
+};
 
-canvas.addEventListener("mousedown", (e) => {
-  drawing = true;
-  ctx.beginPath();
-  ctx.moveTo(e.offsetX, e.offsetY);
+saveBtn.addEventListener("click", () => {
+  const title = titleInput.value.trim();
+  const content = contentInput.value.trim();
+
+  if (!title || !content) {
+    alert("Please enter both a title and some content.");
+    return;
+  }
+
+  const notes = JSON.parse(localStorage.getItem("notes")) || [];
+  notes.push({ title, content });
+  localStorage.setItem("notes", JSON.stringify(notes));
+
+  titleInput.value = "";
+  contentInput.value = "";
+  loadNotes();
 });
 
-canvas.addEventListener("mousemove", (e) => {
-  if (!drawing) return;
-  ctx.lineTo(e.offsetX, e.offsetY);
-  ctx.strokeStyle = "#111";
-  ctx.lineWidth = 2;
-  ctx.lineCap = "round";
-  ctx.stroke();
-});
+function loadNotes() {
+  const notes = JSON.parse(localStorage.getItem("notes")) || [];
+  notesList.innerHTML = "";
 
-canvas.addEventListener("mouseup", () => {
-  drawing = false;
-  ctx.closePath();
-});
-
-canvas.addEventListener("mouseout", () => {
-  drawing = false;
-  ctx.closePath();
-});
-
-document.getElementById("clearCanvas").addEventListener("click", () => {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-});
-
-document.getElementById("saveCanvas").addEventListener("click", () => {
-  const dataURL = canvas.toDataURL("image/png");
-  const link = document.createElement("a");
-  link.href = dataURL;
-  link.download = "notive-note.png";
-  link.click();
-});
-document.getElementById("convertText").addEventListener("click", () => {
-  const output = document.getElementById("textOutput");
-  output.value = "Processing...";
-
-  Tesseract.recognize(
-    canvas.toDataURL("image/png"),
-    'eng',
-    {
-      logger: m => console.log(m) // Optional: shows progress
-    }
-  ).then(({ data: { text } }) => {
-    output.value = text.trim() || "(No readable text found)";
-  }).catch(err => {
-    output.value = "Error recognizing text.";
-    console.error(err);
+  notes.forEach((note, index) => {
+    const li = document.createElement("li");
+    li.textContent = note.title;
+    li.onclick = () => {
+      titleInput.value = note.title;
+      contentInput.value = note.content;
+    };
+    notesList.appendChild(li);
   });
-});
-
+}
