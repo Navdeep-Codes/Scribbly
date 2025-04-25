@@ -12,16 +12,55 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(express.static('public'));
 
-// Ensure entries directory exists
-const entriesDir = path.join(__dirname, 'entries');
-fs.ensureDirSync(entriesDir);
+// Authentication Middleware
+function authenticate(req, res, next) {
+    const sessionToken = req.headers['authorization'];
+
+    if (!sessionToken) {
+        return res.status(401).json({ error: 'Unauthorized. No session token provided.' });
+    }
+
+    const [username, timestamp] = Buffer.from(sessionToken, 'base64').toString('utf8').split(':');
+
+    if (!username || !timestamp) {
+        return res.status(401).json({ error: 'Invalid session token.' });
+    }
+
+    req.username = username; // Attach username to request object
+    next();
+}
+
+// API endpoint to save a notebook entry
+app.post('/api/entry/:date', authenticate, async (req, res) => {
+    try {
+        const username = req.username; // Extract username from request
+        const date = req.params.date;
+        const content = req.body.content;
+
+        const userDir = path.join(__dirname, 'entries', username);
+        const filePath = path.join(userDir, `${date}.md`);
+
+        // Ensure user directory exists
+        await fs.ensureDir(userDir);
+
+        // Save file
+        await fs.writeFile(filePath, content);
+
+        res.json({ success: true, message: `Entry saved for user: ${username}` });
+    } catch (error) {
+        console.error('Error saving file:', error);
+        res.status(500).json({ error: 'Failed to save entry' });
+    }
+});
 
 // API endpoint to get a notebook entry
-app.get('/api/entry/:date', async (req, res) => {
+app.get('/api/entry/:date', authenticate, async (req, res) => {
     try {
+        const username = req.username; // Extract username from request
         const date = req.params.date;
-        const filePath = path.join(entriesDir, `${date}.md`);
-        
+
+        const filePath = path.join(__dirname, 'entries', username, `${date}.md`);
+
         if (await fs.pathExists(filePath)) {
             const content = await fs.readFile(filePath, 'utf8');
             res.json({ content });
@@ -34,38 +73,6 @@ app.get('/api/entry/:date', async (req, res) => {
     }
 });
 
-// API endpoint to save a notebook entry
-app.post('/api/entry/:date', async (req, res) => {
-    try {
-        const date = req.params.date;
-        const content = req.body.content;
-        const filePath = path.join(entriesDir, `${date}.md`);
-        
-        await fs.writeFile(filePath, content);
-        
-        res.json({ success: true, message: 'Entry saved successfully' });
-    } catch (error) {
-        console.error('Error saving file:', error);
-        res.status(500).json({ error: 'Failed to save entry' });
-    }
-});
-
-// API endpoint to list all entries
-app.get('/api/entries', async (req, res) => {
-    try {
-        const files = await fs.readdir(entriesDir);
-        const entries = files
-            .filter(file => file.endsWith('.md'))
-            .map(file => file.replace('.md', ''));
-            
-        res.json({ entries });
-    } catch (error) {
-        console.error('Error listing entries:', error);
-        res.status(500).json({ error: 'Failed to list entries' });
-    }
-});
-
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
-    console.log(`Notebook entries will be saved to ${entriesDir}`);
 });

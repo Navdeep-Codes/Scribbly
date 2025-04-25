@@ -198,24 +198,25 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Save current entry
     async function saveEntry() {
-        if (!markdownEditor) return;
-        
         try {
             const dateKey = formatDateKey(currentDate);
             const content = markdownEditor.value;
-            
-            const response = await fetch(`${API_URL}/entry/${dateKey}`, {
+    
+            const sessionToken = localStorage.getItem('sessionToken');
+    
+            const response = await fetch(`/api/entry/${dateKey}`, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Authorization': sessionToken,
                 },
-                body: JSON.stringify({ content })
+                body: JSON.stringify({ content }),
             });
-            
+    
             if (!response.ok) {
                 throw new Error('Failed to save entry');
             }
-            
+    
             updateSaveStatus('Saved');
         } catch (error) {
             console.error('Error saving entry:', error);
@@ -1124,4 +1125,29 @@ document.addEventListener('DOMContentLoaded', function() {
         // Load goals on init
         loadGoals();
     }
+    document.addEventListener('DOMContentLoaded', () => {
+        const username = localStorage.getItem('username');
+        const sessionToken = localStorage.getItem('sessionToken');
+    
+        if (!username || !sessionToken) {
+            // Redirect to login page if not authenticated
+            window.location.href = 'login.html';
+            return;
+        }
+    
+        // Display logged-in user's name
+        const loggedInUser = document.getElementById('logged-in-user');
+        if (loggedInUser) {
+            loggedInUser.textContent = `Hello, ${username}`;
+        }
+    
+        // Logout functionality
+        const logoutBtn = document.getElementById('logout-btn');
+        if (logoutBtn) {
+            logoutBtn.addEventListener('click', () => {
+                localStorage.clear(); // Clear session data
+                window.location.href = 'login.html';
+            });
+        }
+    });
 });

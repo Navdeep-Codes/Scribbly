@@ -3,22 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Markdown Notebook</title>
+    <title>Scribbly</title>
     <link rel="stylesheet" href="css/styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&family=Caveat:wght@400;700&family=Lora:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-    <!-- Markdown parser -->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    <!-- Code highlighting -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.7.0/styles/github.css">
     <script src="https://cdn.jsdelivr.net/npm/highlight.js@11.7.0/lib/highlight.min.js"></script>
 </head>
 <body>
     <div class="app-container">
-        <!-- Sidebar -->
         <div class="sidebar">
             <div class="sidebar-header">
-                <h3>My Notebook</h3>
+                <h3>Scribbly</h3>
+                <div class="user-info">
+                    <span id="logged-in-user"></span>
+                    <button id="logout-btn">Logout</button>
+                </div>
             </div>
             
             <div class="sidebar-nav">
@@ -44,17 +45,14 @@
             </div>
             
             <div class="sidebar-footer">
-                <span>Navdeep-Codes</span>
+                <span>Made with 💗 by Navdeep-Codes</span>
                 <div class="current-time" id="current-time">2025-04-21</div>
             </div>
         </div>
         
-        <!-- Main Content -->
         <div class="main-content">
-            <!-- Diary Page -->
             <div class="page-content" id="diary-page" data-page="diary">
                 <div class="notebook-container">
-                    <!-- Notebook binding -->
                     <div class="notebook-binding">
                         <div class="binding-ring"></div>
                         <div class="binding-ring"></div>
@@ -63,9 +61,7 @@
                         <div class="binding-ring"></div>
                     </div>
                     
-                    <!-- Notebook content -->
                     <div class="notebook-content">
-                        <!-- Page header -->
                         <div class="page-header">
                             <div class="date-display">
                                 <span id="current-date">Monday, April 21, 2025</span>
@@ -78,7 +74,6 @@
                             </div>
                         </div>
                         
-                        <!-- Markdown toolbar -->
                         <div class="formatting-toolbar">
                             <button data-markdown="**text**" title="Bold"><i class="fas fa-bold"></i></button>
                             <button data-markdown="_text_" title="Italic"><i class="fas fa-italic"></i></button>
@@ -98,9 +93,7 @@
                             </div>
                         </div>
                         
-                        <!-- Notebook page -->
                         <div class="notebook-page">
-                            <!-- Edit mode -->
                             <div id="edit-mode" class="edit-mode active">
                                 <textarea id="markdown-editor" placeholder="# Dear Diary...
                                 
@@ -119,13 +112,11 @@ Write your thoughts here using Markdown.
 "></textarea>
                             </div>
                             
-                            <!-- Preview mode -->
                             <div id="preview-mode" class="preview-mode">
                                 <div id="markdown-preview"></div>
                             </div>
                         </div>
 
-                        <!-- Markdown cheatsheet drawer -->
                         <div class="markdown-help-drawer" id="markdown-help-drawer">
                             <div class="drawer-toggle" id="drawer-toggle">
                                 <span>Markdown Help</span>
@@ -181,7 +172,6 @@ Write your thoughts here using Markdown.
                 </div>
             </div>
             
-            <!-- Tasks Page -->
             <div class="page-content hidden" id="tasks-page" data-page="tasks">
                 <div class="content-card">
                     <h1><i class="fas fa-tasks"></i> Tasks</h1>
@@ -196,53 +186,18 @@ Write your thoughts here using Markdown.
                             <button class="filter" data-filter="completed">Completed</button>
                         </div>
                         <ul class="task-list" id="task-list">
-                            <li class="task-item">
-                                <input type="checkbox" id="task-1">
-                                <label for="task-1">Complete Day 1 diary implementation</label>
-                                <button class="delete-task"><i class="fas fa-trash-alt"></i></button>
-                            </li>
-                            <li class="task-item">
-                                <input type="checkbox" id="task-2">
-                                <label for="task-2">Add markdown support</label>
-                                <button class="delete-task"><i class="fas fa-trash-alt"></i></button>
-                            </li>
-                            <li class="task-item completed">
-                                <input type="checkbox" id="task-3" checked>
-                                <label for="task-3">Set up project structure</label>
-                                <button class="delete-task"><i class="fas fa-trash-alt"></i></button>
-                            </li>
+                            
                         </ul>
                     </div>
                 </div>
             </div>
             
-            <!-- Notes Page -->
             <div class="page-content hidden" id="notes-page" data-page="notes">
                 <div class="content-card">
                     <h1><i class="fas fa-sticky-note"></i> Quick Notes</h1>
                     <div class="notes-container">
                         <div class="notes-list">
-                            <div class="note-item">
-                                <h3>Project Ideas</h3>
-                                <p>Brainstorm for new features to add to the notebook app</p>
-                                <div class="note-meta">
-                                    <span>April 19, 2025</span>
-                                    <div class="note-actions">
-                                        <button><i class="fas fa-edit"></i></button>
-                                        <button><i class="fas fa-trash"></i></button>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="note-item">
-                                <h3>Meeting Notes</h3>
-                                <p>Discussion points from team meeting about app development</p>
-                                <div class="note-meta">
-                                    <span>April 20, 2025</span>
-                                    <div class="note-actions">
-                                        <button><i class="fas fa-edit"></i></button>
-                                        <button><i class="fas fa-trash"></i></button>
-                                    </div>
-                                </div>
+                            
                             </div>
                             <div class="add-note">
                                 <button id="add-note-btn"><i class="fas fa-plus"></i> Add Note</button>
@@ -252,36 +207,11 @@ Write your thoughts here using Markdown.
                 </div>
             </div>
             
-            <!-- Goals Page -->
             <div class="page-content hidden" id="goals-page" data-page="goals">
                 <div class="content-card">
                     <h1><i class="fas fa-bullseye"></i> Goals & Progress</h1>
                     <div class="goals-container">
-                        <div class="goal-item">
-                            <div class="goal-header">
-                                <h3>Complete Notebook App</h3>
-                                <span class="goal-progress">60%</span>
-                            </div>
-                            <div class="progress-bar">
-                                <div class="progress-fill" style="width: 60%"></div>
-                            </div>
-                            <div class="goal-details">
-                                <p>Finish implementing all features of the digital notebook app</p>
-                                <span class="goal-date">Due: April 25, 2025</span>
-                            </div>
-                        </div>
-                        <div class="goal-item">
-                            <div class="goal-header">
-                                <h3>Learn Markdown</h3>
-                                <span class="goal-progress">75%</span>
-                            </div>
-                            <div class="progress-bar">
-                                <div class="progress-fill" style="width: 75%"></div>
-                            </div>
-                            <div class="goal-details">
-                                <p>Master Markdown syntax for better note-taking</p>
-                                <span class="goal-date">Due: April 30, 2025</span>
-                            </div>
+                        
                         </div>
                         <div class="add-goal">
                             <button id="add-goal-btn"><i class="fas fa-plus"></i> Add Goal</button>
@@ -292,6 +222,6 @@ Write your thoughts here using Markdown.
         </div>
     </div>
     
-    <script src="js/notebook.js"></script>
+    <script src="js/notebook.js"></script>  
 </body>
 </html>
