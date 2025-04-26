@@ -1,5 +1,4 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // DOM Elements - Notebook
     const markdownEditor = document.getElementById('markdown-editor');
     const markdownPreview = document.getElementById('markdown-preview');
     const currentDateDisplay = document.getElementById('current-date');
@@ -14,26 +13,20 @@ document.addEventListener('DOMContentLoaded', function() {
     const drawerToggle = document.getElementById('drawer-toggle');
     const markdownHelpDrawer = document.getElementById('markdown-help-drawer');
     
-    // DOM Elements - Navigation
     const navButtons = document.querySelectorAll('.nav-button');
     const pages = document.querySelectorAll('.page-content');
     const currentTimeEl = document.getElementById('current-time');
     
-    // Server API URL
     const API_URL = '/api';
     
-    // Current date
     let currentDate = new Date();
     
-    // Auto-save timer
     let autoSaveTimer = null;
     
-    // Initialize notebook and nav
     initNotebook();
     initNavigation();
     updateCurrentTime();
 
-    // Set up markdown parser options
     const markedOptions = {
         breaks: true,
         gfm: true,
@@ -45,7 +38,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     };
     
-    // Set up event listeners
     if (markdownEditor) {
         markdownEditor.addEventListener('input', startAutoSave);
     }
@@ -70,14 +62,12 @@ document.addEventListener('DOMContentLoaded', function() {
         drawerToggle.addEventListener('click', toggleMarkdownHelp);
     }
     
-    // Format buttons
     formatButtons.forEach(button => {
         button.addEventListener('click', () => {
             insertMarkdownSyntax(button.getAttribute('data-markdown'));
         });
     });
     
-    // Navigation buttons
     navButtons.forEach(button => {
         button.addEventListener('click', () => {
             const pageId = button.getAttribute('data-page');
@@ -85,24 +75,19 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
     
-    // Initialize notebook
     function initNotebook() {
         updateDateDisplay();
         loadEntry();
     }
     
-    // Initialize navigation
     function initNavigation() {
-        // Set active page based on current URL or default to diary
         const urlParams = new URLSearchParams(window.location.search);
         const pageParam = urlParams.get('page') || 'diary';
         navigateToPage(pageParam, false);
         
-        // Update time every minute
         setInterval(updateCurrentTime, 60000);
     }
     
-    // Update current time display
     function updateCurrentTime() {
         const now = new Date();
         const formattedTime = now.toLocaleString('en-US', { 
@@ -116,9 +101,7 @@ document.addEventListener('DOMContentLoaded', function() {
         currentTimeEl.textContent = formattedTime;
     }
     
-    // Navigate to a page
     function navigateToPage(pageId, updateUrl = true) {
-        // Update nav buttons
         navButtons.forEach(button => {
             if (button.getAttribute('data-page') === pageId) {
                 button.classList.add('active');
@@ -127,7 +110,6 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
         
-        // Update page visibility
         pages.forEach(page => {
             if (page.getAttribute('data-page') === pageId) {
                 page.classList.remove('hidden');
@@ -136,12 +118,10 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
         
-        // Update URL if needed
         if (updateUrl) {
             window.history.pushState({}, '', `?page=${pageId}`);
         }
         
-        // Special handling for diary page
         if (pageId === 'diary') {
             setTimeout(() => {
                 updatePreview();
@@ -149,7 +129,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
-    // Update the date display
     function updateDateDisplay() {
         if (!currentDateDisplay) return;
         
@@ -157,12 +136,10 @@ document.addEventListener('DOMContentLoaded', function() {
         currentDateDisplay.textContent = currentDate.toLocaleDateString('en-US', options);
     }
 
-    // Format date for API
     function formatDateKey(date) {
         return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
     }
     
-    // Load entry for current date
     async function loadEntry() {
         if (!markdownEditor || !markdownPreview) return;
         
@@ -178,16 +155,13 @@ document.addEventListener('DOMContentLoaded', function() {
             
             markdownEditor.value = data.content || '';
             
-            // If there's no content and it's today, maybe add a template
             if (!data.content && dateKey === formatDateKey(new Date())) {
                 const currentTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute:'2-digit' });
                 markdownEditor.value = `# Entry for ${currentDateDisplay.textContent}\n\nWritten at ${currentTime}\n\n`;
             }
             
-            // Update preview
             updatePreview();
             
-            // Update save status
             updateSaveStatus('Loaded');
         } catch (error) {
             console.error('Error loading entry:', error);
@@ -196,7 +170,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
-    // Save current entry
     async function saveEntry() {
         try {
             const dateKey = formatDateKey(currentDate);
@@ -224,25 +197,20 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
-    // Start auto-save timer
     function startAutoSave() {
         updateSaveStatus('Typing...');
         
-        // Update preview in real time
         updatePreview();
         
-        // Clear previous timer
         if (autoSaveTimer) {
             clearTimeout(autoSaveTimer);
         }
         
-        // Set new timer
         autoSaveTimer = setTimeout(() => {
             saveEntry();
-        }, 1000); // Auto-save after 1 second of inactivity
+        }, 1000); 
     }
     
-    // Update save status indicator
     function updateSaveStatus(message) {
         if (!saveStatus) return;
         
@@ -259,41 +227,35 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
-    // Update markdown preview
     function updatePreview() {
         if (!markdownEditor || !markdownPreview) return;
         
         const content = markdownEditor.value;
         markdownPreview.innerHTML = marked.parse(content, markedOptions);
         
-        // Apply syntax highlighting to code blocks
         document.querySelectorAll('#markdown-preview pre code').forEach((block) => {
             hljs.highlightElement(block);
         });
     }
     
-    // Navigate to previous day
     function goToPreviousDay() {
         currentDate.setDate(currentDate.getDate() - 1);
         updateDateDisplay();
         loadEntry();
     }
     
-    // Navigate to next day
     function goToNextDay() {
         currentDate.setDate(currentDate.getDate() + 1);
         updateDateDisplay();
         loadEntry();
     }
     
-    // Navigate to today
     function goToToday() {
         currentDate = new Date();
         updateDateDisplay();
         loadEntry();
     }
     
-    // Toggle between edit and preview modes
     function toggleView() {
         editMode.classList.toggle('active');
         previewMode.classList.toggle('active');
@@ -309,7 +271,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
-    // Insert markdown syntax
     function insertMarkdownSyntax(syntax) {
         if (!markdownEditor) return;
         
@@ -319,9 +280,7 @@ document.addEventListener('DOMContentLoaded', function() {
         let selectedText = text.substring(start, end);
         let replacement = '';
         
-        // Custom handling for different markdown features
         if (syntax.includes('text')) {
-            // For bold, italic, etc. where we wrap the text
             const parts = syntax.split('text');
             
             if (selectedText) {
@@ -336,7 +295,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 replacement + 
                 text.substring(end);
                 
-            // Position cursor inside the syntax if no text was selected
             if (start === end) {
                 markdownEditor.selectionStart = start + parts[0].length;
                 markdownEditor.selectionEnd = start + parts[0].length + selectedText.length;
@@ -345,9 +303,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 markdownEditor.selectionEnd = start + replacement.length;
             }
         } else {
-            // For list items, headings, etc. where we prefix the line
             if (syntax === '# ' || syntax === '- ' || syntax === '1. ' || syntax === '> ') {
-                // Find the start of the line
                 let lineStart = start;
                 while (lineStart > 0 && text.charAt(lineStart - 1) !== '\n') {
                     lineStart--;
@@ -362,7 +318,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 markdownEditor.selectionStart = lineStart + syntax.length;
                 markdownEditor.selectionEnd = lineStart + replacement.length;
             } else {
-                // For horizontal rule, code blocks, etc.
                 replacement = syntax;
                 
                 if (syntax === '```\ncode\n```') {
@@ -389,12 +344,10 @@ document.addEventListener('DOMContentLoaded', function() {
         startAutoSave();
     }
     
-    // Toggle markdown help drawer
     function toggleMarkdownHelp() {
         markdownHelpDrawer.classList.toggle('open');
     }
 
-    // Set personalized greeting on first load for today
     function setPersonalizedGreeting() {
         if (!markdownEditor || markdownEditor.value.trim() !== '') return;
         
@@ -415,12 +368,10 @@ document.addEventListener('DOMContentLoaded', function() {
         startAutoSave();
     }
     
-    // Initial load - set personalized greeting if on diary page
     if (formatDateKey(currentDate) === formatDateKey(new Date())) {
         setTimeout(setPersonalizedGreeting, 500);
     }
     
-    // Initialize task functionality
     initTaskFunctionality();
     
     function initTaskFunctionality() {
@@ -431,7 +382,6 @@ document.addEventListener('DOMContentLoaded', function() {
         
         if (!addTaskBtn || !newTaskInput || !taskList) return;
         
-        // Add new task
         addTaskBtn.addEventListener('click', addNewTask);
         newTaskInput.addEventListener('keypress', function(e) {
             if (e.key === 'Enter') {
@@ -439,28 +389,23 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
         
-        // Filter tasks
         filterButtons.forEach(button => {
             button.addEventListener('click', function() {
                 const filterType = this.getAttribute('data-filter');
                 filterTasks(filterType);
                 
-                // Update active filter
                 filterButtons.forEach(btn => btn.classList.remove('active'));
                 this.classList.add('active');
             });
         });
         
-        // Delete task and toggle completion
         taskList.addEventListener('click', function(e) {
-            // Delete button clicked
             if (e.target.closest('.delete-task')) {
                 const taskItem = e.target.closest('.task-item');
                 taskItem.remove();
                 saveTasks();
             }
             
-            // Checkbox toggled
             if (e.target.type === 'checkbox') {
                 const taskItem = e.target.closest('.task-item');
                 taskItem.classList.toggle('completed', e.target.checked);
@@ -504,7 +449,6 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         }
         
-        // Save tasks to local storage
         function saveTasks() {
             const tasks = [];
             taskList.querySelectorAll('.task-item').forEach(taskItem => {
@@ -521,7 +465,6 @@ document.addEventListener('DOMContentLoaded', function() {
             localStorage.setItem('notebook_tasks', JSON.stringify(tasks));
         }
         
-        // Load tasks from local storage
         function loadTasks() {
             const tasksJson = localStorage.getItem('notebook_tasks');
             if (!tasksJson) return;
@@ -529,10 +472,8 @@ document.addEventListener('DOMContentLoaded', function() {
             try {
                 const tasks = JSON.parse(tasksJson);
                 
-                // Clear existing tasks
                 taskList.innerHTML = '';
                 
-                // Add tasks from storage
                 tasks.forEach(task => {
                     const taskItem = document.createElement('li');
                     taskItem.className = 'task-item';
@@ -553,11 +494,9 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
         
-        // Load tasks on init
         loadTasks();
     }
     
-    // Initialize notes functionality
     initNotesFunctionality();
     
     function initNotesFunctionality() {
@@ -566,12 +505,9 @@ document.addEventListener('DOMContentLoaded', function() {
         
         if (!addNoteBtn || !notesList) return;
         
-        // Add new note
         addNoteBtn.addEventListener('click', openNoteEditor);
         
-        // Note actions (edit/delete)
         notesList.addEventListener('click', function(e) {
-            // Edit button clicked
             if (e.target.closest('.fa-edit')) {
                 const noteItem = e.target.closest('.note-item');
                 const title = noteItem.querySelector('h3').textContent;
@@ -579,7 +515,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 openNoteEditor(title, content, noteItem);
             }
             
-            // Delete button clicked
             if (e.target.closest('.fa-trash')) {
                 const noteItem = e.target.closest('.note-item');
                 if (confirm('Delete this note?')) {
@@ -590,7 +525,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
         
         function openNoteEditor(existingTitle = '', existingContent = '', existingNote = null) {
-            // Create modal
             const modal = document.createElement('div');
             modal.className = 'note-modal';
             
@@ -617,12 +551,10 @@ document.addEventListener('DOMContentLoaded', function() {
             
             document.body.appendChild(modal);
             
-            // Focus on title input
             setTimeout(() => {
                 modal.querySelector('.note-title-input').focus();
             }, 100);
             
-            // Add event listeners
             modal.querySelector('.cancel-note').addEventListener('click', () => {
                 modal.remove();
             });
@@ -640,14 +572,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 modal.remove();
             });
             
-            // Close when clicking outside
             modal.addEventListener('click', (e) => {
                 if (e.target === modal) {
                     modal.remove();
                 }
             });
             
-            // Add modal styles dynamically if not already present
             if (!document.getElementById('modal-styles')) {
                 const style = document.createElement('style');
                 style.id = 'modal-styles';
@@ -735,11 +665,9 @@ document.addEventListener('DOMContentLoaded', function() {
             });
             
             if (existingNote) {
-                // Update existing note
                 existingNote.querySelector('h3').textContent = title;
                 existingNote.querySelector('p').textContent = content;
             } else {
-                // Create new note element
                 const addNote = notesList.querySelector('.add-note');
                 
                 const noteItem = document.createElement('div');
@@ -756,19 +684,15 @@ document.addEventListener('DOMContentLoaded', function() {
                     </div>
                 `;
                 
-                // Insert before the "Add Note" button
                 notesList.insertBefore(noteItem, addNote);
             }
             
-            // Save all notes
             saveNotes();
         }
         
-        // Save notes to local storage
         function saveNotes() {
             const notes = [];
             notesList.querySelectorAll('.note-item').forEach(noteItem => {
-                // Skip the "add note" item
                 if (noteItem.classList.contains('add-note')) return;
                 
                 const title = noteItem.querySelector('h3').textContent;
@@ -785,7 +709,6 @@ document.addEventListener('DOMContentLoaded', function() {
             localStorage.setItem('notebook_notes', JSON.stringify(notes));
         }
         
-        // Load notes from local storage
         function loadNotes() {
             const notesJson = localStorage.getItem('notebook_notes');
             if (!notesJson) return;
@@ -794,12 +717,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 const notes = JSON.parse(notesJson);
                 const addNote = notesList.querySelector('.add-note');
                 
-                // Clear existing notes (except add-note button)
                 notesList.querySelectorAll('.note-item:not(.add-note)').forEach(item => {
                     item.remove();
                 });
                 
-                // Add notes from storage
                 notes.forEach(note => {
                     const noteItem = document.createElement('div');
                     noteItem.className = 'note-item';
@@ -815,7 +736,6 @@ document.addEventListener('DOMContentLoaded', function() {
                         </div>
                     `;
                     
-                    // Insert before the "Add Note" button
                     notesList.insertBefore(noteItem, addNote);
                 });
             } catch (error) {
@@ -823,11 +743,9 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
         
-        // Load notes on init
         loadNotes();
     }
     
-    // Initialize goals functionality
     initGoalsFunctionality();
     
     function initGoalsFunctionality() {
@@ -836,12 +754,9 @@ document.addEventListener('DOMContentLoaded', function() {
         
         if (!addGoalBtn || !goalsContainer) return;
         
-        // Add new goal
         addGoalBtn.addEventListener('click', openGoalEditor);
         
-        // Goal actions (edit/delete)
         goalsContainer.addEventListener('click', function(e) {
-            // If clicked on the progress bar, update progress
             if (e.target.classList.contains('progress-bar') || e.target.classList.contains('progress-fill')) {
                 const goalItem = e.target.closest('.goal-item');
                 const rect = e.target.getBoundingClientRect();
@@ -853,7 +768,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
         
         function openGoalEditor() {
-            // Create modal
             const modal = document.createElement('div');
             modal.className = 'goal-modal';
             
@@ -875,17 +789,14 @@ document.addEventListener('DOMContentLoaded', function() {
             
             document.body.appendChild(modal);
             
-            // Set default date (2 weeks from now)
             const twoWeeksLater = new Date();
             twoWeeksLater.setDate(twoWeeksLater.getDate() + 14);
             modal.querySelector('.goal-date-input').value = twoWeeksLater.toISOString().split('T')[0];
             
-            // Focus on title input
             setTimeout(() => {
                 modal.querySelector('.goal-title-input').focus();
             }, 100);
             
-            // Add event listeners
             modal.querySelector('.cancel-goal').addEventListener('click', () => {
                 modal.remove();
             });
@@ -904,14 +815,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 modal.remove();
             });
             
-            // Close when clicking outside
             modal.addEventListener('click', (e) => {
                 if (e.target === modal) {
                     modal.remove();
                 }
             });
             
-            // Add modal styles if not present (reuse note modal styles)
             if (!document.getElementById('modal-styles')) {
                 const style = document.createElement('style');
                 style.id = 'modal-styles';
@@ -1002,14 +911,12 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         function saveGoalFromEditor(title, description, dueDate) {
-            // Format the date
             const dueDisplay = new Date(dueDate).toLocaleDateString('en-US', {
                 year: 'numeric',
                 month: 'long',
                 day: 'numeric'
             });
             
-            // Create goal element
             const addGoal = goalsContainer.querySelector('.add-goal');
             
             const goalItem = document.createElement('div');
@@ -1028,22 +935,17 @@ document.addEventListener('DOMContentLoaded', function() {
                 </div>
             `;
             
-            // Insert before the "Add Goal" button
             goalsContainer.insertBefore(goalItem, addGoal);
             
-            // Save all goals
             saveGoals();
         }
         
         function updateGoalProgress(goalItem, percentage) {
-            // Clamp value between 0-100
             percentage = Math.max(0, Math.min(100, percentage));
             
-            // Update visual elements
             goalItem.querySelector('.goal-progress').textContent = `${percentage}%`;
             goalItem.querySelector('.progress-fill').style.width = `${percentage}%`;
             
-            // Change color based on progress
             const progressFill = goalItem.querySelector('.progress-fill');
             
             if (percentage < 30) {
@@ -1054,15 +956,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 progressFill.style.backgroundColor = '#27ae60'; // Green
             }
             
-            // Save goals
             saveGoals();
         }
         
-        // Save goals to local storage
         function saveGoals() {
             const goals = [];
             goalsContainer.querySelectorAll('.goal-item').forEach(goalItem => {
-                // Skip the "add goal" item
                 if (goalItem.classList.contains('add-goal')) return;
                 
                 const title = goalItem.querySelector('h3').textContent;
@@ -1082,7 +981,6 @@ document.addEventListener('DOMContentLoaded', function() {
             localStorage.setItem('notebook_goals', JSON.stringify(goals));
         }
         
-        // Load goals from local storage
         function loadGoals() {
             const goalsJson = localStorage.getItem('notebook_goals');
             if (!goalsJson) return;
@@ -1091,12 +989,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 const goals = JSON.parse(goalsJson);
                 const addGoal = goalsContainer.querySelector('.add-goal');
                 
-                // Clear existing goals (except add-goal button)
                 goalsContainer.querySelectorAll('.goal-item:not(.add-goal)').forEach(item => {
                     item.remove();
                 });
                 
-                // Add goals from storage
                 goals.forEach(goal => {
                     const goalItem = document.createElement('div');
                     goalItem.className = 'goal-item';
@@ -1114,7 +1010,6 @@ document.addEventListener('DOMContentLoaded', function() {
                         </div>
                     `;
                     
-                    // Insert before the "Add Goal" button
                     goalsContainer.insertBefore(goalItem, addGoal);
                 });
             } catch (error) {
@@ -1122,7 +1017,6 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
         
-        // Load goals on init
         loadGoals();
     }
     document.addEventListener('DOMContentLoaded', () => {
@@ -1130,22 +1024,19 @@ document.addEventListener('DOMContentLoaded', function() {
         const sessionToken = localStorage.getItem('sessionToken');
     
         if (!username || !sessionToken) {
-            // Redirect to login page if not authenticated
             window.location.href = 'login.html';
             return;
         }
     
-        // Display logged-in user's name
         const loggedInUser = document.getElementById('logged-in-user');
         if (loggedInUser) {
             loggedInUser.textContent = `Hello, ${username}`;
         }
     
-        // Logout functionality
         const logoutBtn = document.getElementById('logout-btn');
         if (logoutBtn) {
             logoutBtn.addEventListener('click', () => {
-                localStorage.clear(); // Clear session data
+                localStorage.clear(); 
                 window.location.href = 'login.html';
             });
         }
