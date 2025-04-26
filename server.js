@@ -7,12 +7,10 @@ const cors = require('cors');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Middleware
 app.use(cors());
 app.use(bodyParser.json());
 app.use(express.static('public'));
 
-// Authentication Middleware
 function authenticate(req, res, next) {
     const sessionToken = req.headers['authorization'];
 
@@ -26,24 +24,21 @@ function authenticate(req, res, next) {
         return res.status(401).json({ error: 'Invalid session token.' });
     }
 
-    req.username = username; // Attach username to request object
+    req.username = username; 
     next();
 }
 
-// API endpoint to save a notebook entry
 app.post('/api/entry/:date', authenticate, async (req, res) => {
     try {
-        const username = req.username; // Extract username from request
+        const username = req.username; 
         const date = req.params.date;
         const content = req.body.content;
 
         const userDir = path.join(__dirname, 'entries', username);
         const filePath = path.join(userDir, `${date}.md`);
 
-        // Ensure user directory exists
         await fs.ensureDir(userDir);
 
-        // Save file
         await fs.writeFile(filePath, content);
 
         res.json({ success: true, message: `Entry saved for user: ${username}` });
@@ -53,10 +48,9 @@ app.post('/api/entry/:date', authenticate, async (req, res) => {
     }
 });
 
-// API endpoint to get a notebook entry
 app.get('/api/entry/:date', authenticate, async (req, res) => {
     try {
-        const username = req.username; // Extract username from request
+        const username = req.username; 
         const date = req.params.date;
 
         const filePath = path.join(__dirname, 'entries', username, `${date}.md`);
