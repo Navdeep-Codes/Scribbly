@@ -4,7 +4,7 @@
 Scribbly is a cozy personal dashboard and diary web app built using Node.js and HTML/CSS/JS. It lets you write daily diary entries in a beautiful handwriting font, listen to background music, track your habits, and earn coins and XP that you can spend on unlocking aesthetic diary covers.
 Please star🌟 the repo.
 
-Check out the [Scribbly](https://scribbly.is-open-source.org/) Website
+Check out the ![Scribbly](https://scribbly.is-open-source.org/) Website
 ---
 # Want to host this locally?
 ## Here is the guide to get started
